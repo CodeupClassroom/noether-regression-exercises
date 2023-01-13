@@ -1,19 +1,27 @@
-#wrangle.py
+############################ IMPORTS #########################
 
+#standard ds imports
 import pandas as pd
 import numpy as np
+import os
+
+#visualization imports
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+#import custom modules
 from env import user, password, host
-import os
 
+#import sklearn modules
 from sklearn.model_selection import train_test_split
 from sklearn.impute import SimpleImputer
 
+#ignore warnings
 import warnings
 warnings.filterwarnings("ignore")
 
+
+############################## AQUIRE ZILLOW FUNCTION ##############################
 
 def acquire_zillow():
     '''
@@ -32,6 +40,8 @@ def acquire_zillow():
 
     return df
 
+############################ PREPARE ZILLOW FUNCTION ###########################
+
 def prep_zillow(df):
     '''
     This function takes in the zillow df
@@ -45,7 +55,29 @@ def prep_zillow(df):
 
     #drop duplicates
     df.drop_duplicates(inplace=True)
-    
+   
+    return df
+
+
+############################ WRANGLE ZILLOW FUNCTION ############################
+
+def wrangle_zillow():
+    '''
+    This function acquires and prepares our Zillow data
+    and returns the clean dataframe
+    '''
+    df = prep_zillow(acquire_zillow())
+    return df
+
+
+
+############################ SPLIT ZILLOW FUNCTION ############################
+
+def split_zillow(df):
+    '''
+    This function takes in the dataframe
+    and splits it into train, validate, test datasets
+    '''    
     # train/validate/test split
     train_validate, test = train_test_split(df, test_size=.2, random_state=123)
     train, validate = train_test_split(train_validate, test_size=.3, random_state=123)
@@ -53,11 +85,13 @@ def prep_zillow(df):
     return train, validate, test
 
 
-def wrangle_zillow():
+########################################## AQUIRE ZILLOW FUNCTION #######################################
+
+def split_clean_zillow():
     '''
-    This function uses the acquire and prepare functions
-    and returns the split/cleaned dataframe
+    This function splits our clean dataset into 
+    train, validate, test datasets
     '''
-    train, validate, test = prep_zillow(acquire_zillow())
-    
+    train, validate, test = split_zillow(wrangle_zillow())
     return train, validate, test
+
