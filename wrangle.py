@@ -40,6 +40,28 @@ def acquire_zillow():
 
     return df
 
+############################## REMOVE OUTLIERS FUNCTION ##############################
+
+def remove_outliers(df, k, col_list):
+    ''' 
+    This function takes in a dataframe, the threshold and a list of columns 
+    and returns the dataframe with outliers removed
+    '''   
+    for col in col_list:
+
+        q1, q3 = df[col].quantile([.25, .75])  # get quartiles
+        
+        iqr = q3 - q1   # calculate interquartile range
+        
+        upper_bound = q3 + k * iqr   # get upper bound
+        lower_bound = q1 - k * iqr   # get lower bound
+
+        # return dataframe without outliers
+        
+        df = df[(df[col] > lower_bound) & (df[col] < upper_bound)]
+        
+    return df
+
 ############################ PREPARE ZILLOW FUNCTION ###########################
 
 def prep_zillow(df):
@@ -48,13 +70,16 @@ def prep_zillow(df):
     then the data is cleaned and returned
     '''
     #change column names to be more readable
-    df = df.rename(columns={'bedroomcnt':'bedrooms','bathroomcnt':'bathrooms', 'calculatedfinishedsquarefeet':'sqft', 'taxvaluedollarcnt':'home_value', 'taxamount':'yearly_tax', 'yearbuilt':'year_built'})
+    df = df.rename(columns={'bedroomcnt':'bedrooms','bathroomcnt':'bathrooms', 'calculatedfinishedsquarefeet':'sqft', 'taxvaluedollarcnt':'home_value', 'taxamount':'sale_tax', 'yearbuilt':'year_built'})
 
     #drop null values- at most there were 9000 nulls (this is only 0.5% of 2.1M)
     df = df.dropna()
 
     #drop duplicates
     df.drop_duplicates(inplace=True)
+    
+    #removing outliers
+    df = remove_outliers(df, 1.5, ['bedrooms', 'bathrooms', 'sqft', 'home_value', 'sale_tax'])
    
     return df
 
@@ -93,5 +118,12 @@ def split_clean_zillow():
     train, validate, test datasets
     '''
     train, validate, test = split_zillow(wrangle_zillow())
+    
+    print(f"train: {train.shape}")
+    print(f"validate: {validate.shape}")
+    print(f"test: {test.shape}")
+    
     return train, validate, test
+        
+
 
