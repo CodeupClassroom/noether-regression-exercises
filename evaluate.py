@@ -57,70 +57,44 @@ def plot_residuals(y, yhat):
 def regression_errors(y, yhat):
     '''
     This function takes in actual value and predicted value 
-    then outputs: the sse, ess, tss, mse, and rmse
+    then outputs the sse, ess, tss, mse, and rmse
+    and a print statement with that data, rounded 4 decimal places
     '''
     MSE = mean_squared_error(y, yhat)
     SSE = MSE * len(y)
     RMSE = math.sqrt(MSE)
     ESS = ((yhat - y.mean())**2).sum()
     TSS = ESS + SSE
-    
+           
+    print(f'SSE: {SSE: .4f}')
+    print(f'ESS: {ESS: .4f}')
+    print(f'TSS: {TSS: .4f}')
+    print(f'MSE: {MSE: .4f}')
+    print(f'RMSE: {RMSE: .4f}')
+
     return MSE, SSE, RMSE, ESS, TSS
 
-#####################FUNCTION FOR REGRESSION ERRORS WITH PRINT STATEMENT#####################
-
-def regression_errors_print(y, yhat):
-    '''
-    This function takes in actual value and predicted value 
-    then outputs a print statement of sse, ess, tss, mse, and rmse
-    '''
-    MSE = mean_squared_error(y, yhat)
-    SSE = MSE * len(y)
-    RMSE = math.sqrt(MSE)
-    ESS = ((yhat - y.mean())**2).sum()
-    TSS = ESS + SSE
-        
-    print(f''' 
-        SSE: {SSE: .4f}
-        ESS: {ESS: .4f}
-        TSS: {TSS: .4f}
-        MSE: {MSE: .4f}
-        RMSE: {RMSE: .4f}
-        ''')
 
 #####################FUNCTION FOR BASELINE ERRORS#####################
 
 def baseline_mean_errors(y):
     '''
     This function takes in actual value and predicted value
-    then outputs: the SSE, MSE, and RMSE for the baseline model
+    then outputs the SSE, MSE, and RMSE for the baseline
+    and a print statement with that data, rounded 4 decimal places
     '''
     baseline = np.repeat(y.mean(), len(y))
     
     MSE = mean_squared_error(y, baseline)
     SSE = MSE * len(y)
     RMSE = MSE**.5
+    
+    print(f'sse_baseline: {SSE: .4f}')
+    print(f'mse_baseline: {MSE: .4f}')
+    print(f'rmse_baseline: {RMSE: .4f}')
     
     return MSE, SSE, RMSE
 
-#####################FUNCTION FOR BASELINE ERRORS WITH PRINT STATEMENT#####################
-
-def baseline_mean_errors_print(y):
-    '''
-    This function takes in actual value and predicted value
-    then outputsa print statement of the SSE, MSE, and RMSE for the baseline
-    '''
-    baseline = np.repeat(y.mean(), len(y))
-    
-    MSE = mean_squared_error(y, baseline)
-    SSE = MSE * len(y)
-    RMSE = MSE**.5
-    
-    print(f'''
-        sse_baseline: {SSE: .4f}
-        mse_baseline: {MSE: .4f}
-        rmse_baseline: {RMSE: .4f}
-        ''')
 
 ##################FUNCTION TO RETURN BETTER THAN BASELINE##################
 
